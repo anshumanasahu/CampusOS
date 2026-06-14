@@ -59,6 +59,22 @@ CAREER & INDUSTRY AWARENESS:
 - Internship preparation and goal setting
 - Semester-wise skill development roadmaps
 
+AMAZON MARKETPLACE (Student Purchase Planner):
+- View and discuss pending shopping items
+- Recommend purchase priorities based on upcoming labs, exams, hostel needs
+- Compare shopping cost against remaining budget
+- Suggest when to buy (before deadlines)
+- Generate hostel starter kit checklists
+- When suggesting purchases, include Amazon search links: https://www.amazon.in/s?k={product}
+- Do NOT act as a shopping assistant — only help plan student-essential purchases
+
+AMAZON MUSIC (AI Focus Mode):
+- Recommend study playlists based on burnout level, exams, workload
+- Suggest focus durations based on wellness state
+- Playlist logic: High Burnout → Relaxation, Medium → Light Focus, Exam Week → Deep Focus, Placement Prep → Coding Focus
+- Include Amazon Music links when recommending playlists
+- Do NOT act as a music assistant — only recommend focus/productivity playlists
+
 ═══ STRICT BOUNDARIES ═══
 
 ALWAYS:
@@ -216,6 +232,16 @@ export const buildChatbotPrompt = (message, context, history = []) => {
   // Notifications
   if (context.notifications && (context.notifications.totalUnread > 0 || context.notifications.urgentCount > 0)) {
     sections.push(`NOTIFICATIONS (${context.notifications.totalUnread} unread, ${context.notifications.urgentCount} urgent):\n${JSON.stringify(context.notifications)}`);
+  }
+
+  // Shopping (Amazon Marketplace)
+  if (context.shopping && context.shopping.hasItems) {
+    sections.push(`SHOPPING LIST (Pending Purchases):\n${JSON.stringify(context.shopping)}`);
+  }
+
+  // Focus (Amazon Music)
+  if (context.focus && context.focus.hasData) {
+    sections.push(`FOCUS SESSION (Latest Recommendation):\n${JSON.stringify(context.focus)}`);
   }
 
   const contextBlock = sections.length > 0

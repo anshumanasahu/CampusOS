@@ -9,6 +9,8 @@ import KnowledgeResource from '../models/knowledge-resource.js';
 import BurnoutRecord from '../models/burnout-record.js';
 import Notification from '../models/notification.js';
 import User from '../models/user.js';
+import ShoppingItem from '../models/shopping-item.js';
+import FocusSession from '../models/focus-session.js';
 import AppError from '../utils/app-error.js';
 import { invokeAIJSON } from './ai.service.js';
 import { CHATBOT_SYSTEM, buildChatbotPrompt } from '../ai/prompts/chatbot.js';
@@ -266,6 +268,8 @@ const buildUserContext = async (userId) => {
     fetchBurnoutContext(userId),
     fetchNotificationContext(userId),
     fetchProfileContext(userId),
+    fetchShoppingContext(userId),
+    fetchFocusContext(userId),
   ]);
 
   return {
@@ -278,6 +282,8 @@ const buildUserContext = async (userId) => {
     knowledge: safeResolve(results[5], []),
     burnout: safeResolve(results[6], {}),
     notifications: safeResolve(results[7], []),
+    shopping: safeResolve(results[9], {}),
+    focus: safeResolve(results[10], {}),
   };
 };
 
@@ -392,4 +398,43 @@ const fetchNotificationContext = async (userId) => {
 const sanitizeSources = (sources) => {
   if (!Array.isArray(sources)) return [];
   return sources.filter((s) => s && s.label).map((s) => ({ type: s.type || 'general', id: s.id ? String(s.id) : null, label: String(s.label) }));
+};
+
+/**
+ * Shopping context: pending purchase list with budget impact.
+ */
+const fetchShoppingContext = async (userId) => {
+  const items = await ShoppingItem.find({ userId, purchased: false })
+    .sort({ priority: -1 })
+    .limit(10)
+    .select('title category priority estimatedCost reason')
+    .lean();
+
+  if (items.length === 0) return { hasItems: false };
+
+  const totalEstimated = items.reduce((s, i) => s + (i.estimatedCost || 0), 0);
+  return {
+    hasItems: true,
+    pendingCount: items.length,
+    totalEstimatedCost: totalEstimated,
+    highPriority: items.filter((i) => i.priority === 'high').map((i) => ({ title: i.title, cost: i.estimatedCost, reason: i.reason })),
+    otherItems: items.filter((i) => i.priority !== 'high').map((i) => ({ title: i.title, cost: i.estimatedCost })),
+  };
+};
+
+/**
+ * Focus context: latest recommendation.
+ */
+const fetchFocusContext = async (userId) => {
+  const latest = await FocusSession.findOne({ userId }).sort({ generatedAt: -1 }).lean();
+  if (!latest) return { hasData: false };
+
+  return {
+    hasData: true,
+    latestRecommendation: latest.recommendation,
+    playlistType: latest.playlistType,
+    duration: latest.duration,
+    reason: latest.reason,
+    generatedAt: latest.generatedAt,
+  };
 };

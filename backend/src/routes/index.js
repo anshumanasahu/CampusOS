@@ -9,6 +9,8 @@ import knowledgeRoutes from './knowledge.routes.js';
 import burnoutRoutes from './burnout.routes.js';
 import notificationRoutes from './notification.routes.js';
 import profileRoutes from './profile.routes.js';
+import shoppingRoutes from './shopping.routes.js';
+import focusRoutes from './focus.routes.js';
 
 const router = Router();
 
@@ -22,5 +24,7 @@ router.use('/knowledge', knowledgeRoutes);
 router.use('/burnout', burnoutRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/profile', profileRoutes);
+router.use('/shopping', shoppingRoutes);
+router.use('/focus', focusRoutes);
 
 export default router;

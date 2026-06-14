@@ -5,6 +5,8 @@ import StatusTag from '../components/shared/status-tag.jsx';
 import LoadingSpinner from '../components/shared/loading-spinner.jsx';
 import ErrorMessage from '../components/shared/error-message.jsx';
 import EmptyState from '../components/shared/empty-state.jsx';
+import ShoppingWidget from '../components/shared/shopping-widget.jsx';
+import FocusWidget from '../components/shared/focus-widget.jsx';
 import { formatDate, formatCurrency, formatPercentage } from '../utils/formatters.js';
 import { getRelativeTime } from '../utils/date-helpers.js';
 
@@ -122,6 +124,12 @@ export default function DashboardPage() {
           <p className="text-lg font-bold text-indigo-600">{goodSeniorPoints.totalPoints} points</p>
         </Card>
       )}
+
+      {/* Amazon Ecosystem Widgets */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <FocusWidget />
+        <ShoppingWidget />
+      </div>
     </div>
   );
 }
