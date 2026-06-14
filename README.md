@@ -97,3 +97,6 @@ AI never saves without explicit user confirmation.
 - REST API with JWT authentication
 - User data isolation (every query scoped by userId)
 - Bedrock primary → Gemini fallback → Manual entry
+
+## Authors 
+Anshuman, Amit, Surabhi
