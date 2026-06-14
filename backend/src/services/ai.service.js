@@ -70,14 +70,71 @@ export const invokeAIJSON = async (systemPrompt, userMessage) => {
 
 /**
  * Extract JSON from AI response text.
- * Handles responses wrapped in ```json code blocks.
+ * Handles responses wrapped in ```json code blocks,
+ * including cases where the JSON content itself contains backtick code blocks.
  */
 const extractJSON = (text) => {
-  // Try to find JSON in code block
-  const codeBlockMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
-  const jsonStr = codeBlockMatch ? codeBlockMatch[1].trim() : text.trim();
+  const trimmed = text.trim();
 
-  return JSON.parse(jsonStr);
+  // Strategy 1: Try parsing the raw text directly (AI returned pure JSON)
+  if (trimmed.startsWith('{')) {
+    try {
+      return JSON.parse(trimmed);
+    } catch {
+      // Not pure JSON, continue
+    }
+  }
+
+  // Strategy 2: Find the outermost JSON object using bracket matching
+  const jsonStart = trimmed.indexOf('{');
+  if (jsonStart !== -1) {
+    let depth = 0;
+    let inString = false;
+    let escape = false;
+
+    for (let i = jsonStart; i < trimmed.length; i++) {
+      const char = trimmed[i];
+
+      if (escape) {
+        escape = false;
+        continue;
+      }
+
+      if (char === '\\') {
+        escape = true;
+        continue;
+      }
+
+      if (char === '"' && !escape) {
+        inString = !inString;
+        continue;
+      }
+
+      if (inString) continue;
+
+      if (char === '{') depth++;
+      else if (char === '}') {
+        depth--;
+        if (depth === 0) {
+          const jsonStr = trimmed.substring(jsonStart, i + 1);
+          try {
+            return JSON.parse(jsonStr);
+          } catch {
+            // Bracket matching found invalid JSON, continue
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  // Strategy 3: Regex fallback for simple cases without nested backticks
+  const codeBlockMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)```\s*$/);
+  if (codeBlockMatch) {
+    return JSON.parse(codeBlockMatch[1].trim());
+  }
+
+  throw new Error('No valid JSON found in AI response');
 };
 
 /**
