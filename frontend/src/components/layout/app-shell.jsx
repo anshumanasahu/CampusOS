@@ -10,7 +10,7 @@ export default function AppShell({ children }) {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50">
+    <div className="flex h-screen overflow-hidden bg-surface-50 dark:bg-[#0f1117]">
       {/* Sidebar */}
       <Sidebar
         isOpen={isSidebarOpen}

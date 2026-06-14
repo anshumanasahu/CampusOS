@@ -69,9 +69,9 @@ export default function KnowledgeHubPage() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-slate-100 p-1 rounded-lg w-fit">
+      <div className="flex gap-1 bg-slate-100 dark:bg-white/[0.04] p-1 rounded-xl w-fit border border-transparent dark:border-white/[0.06]">
         {KNOWLEDGE_TYPES.map((t) => (
-          <button key={t.value} onClick={() => setActiveTab(t.value)} className={`px-4 py-2 text-sm rounded-md transition-colors ${activeTab === t.value ? 'bg-white text-indigo-600 font-medium shadow-sm' : 'text-slate-600 hover:text-slate-800'}`}>
+          <button key={t.value} onClick={() => setActiveTab(t.value)} className={`px-4 py-2 text-sm rounded-lg transition-all duration-150 ${activeTab === t.value ? 'bg-white dark:bg-white/[0.08] text-brand-600 dark:text-brand-300 font-medium shadow-sm dark:shadow-none' : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`}>
             {t.label}
           </button>
         ))}

@@ -4,6 +4,8 @@
  * Creates a seeded demo account with pre-loaded data so the app is
  * immediately understandable during a hackathon demo.
  *
+ * Profile: Anshuman A Sahu, NIT Raipur, CSE, Semester 5
+ *
  * Run: cd backend && npm run seed
  */
 
@@ -40,37 +42,44 @@ async function seed() {
     await mongoose.connect(MONGODB_URI);
     console.log('Connected to MongoDB');
 
-    // ═══ Demo User ═══
+    // ═══ Demo User — Anshuman A Sahu, NIT Raipur ═══
     const demoUser = await User.findOneAndUpdate(
       { email: 'demo@campusos.app' },
-      { email: 'demo@campusos.app', name: 'Arjun Kumar', isDemo: true, college: 'IIT Delhi', semester: 5, branch: 'Computer Science & Engineering' },
+      {
+        email: 'demo@campusos.app',
+        name: 'Anshuman A Sahu',
+        isDemo: true,
+        college: 'National Institute of Technology Raipur',
+        semester: 5,
+        branch: 'Computer Science & Engineering',
+      },
       { upsert: true, new: true }
     );
     const userId = demoUser._id;
     console.log('Demo user:', userId.toString());
 
-    // ═══ Timetable ═══
+    // ═══ Timetable — NIT Raipur CSE Sem 5 ═══
     await Timetable.deleteMany({ userId });
     const subjects = await Timetable.insertMany([
-      { userId, name: 'Data Structures & Algorithms', code: 'CS201', faculty: 'Dr. Sharma', day: 'monday', startTime: '09:00', endTime: '10:00', room: 'LH-101', targetThreshold: 75 },
-      { userId, name: 'Data Structures & Algorithms', code: 'CS201', faculty: 'Dr. Sharma', day: 'wednesday', startTime: '09:00', endTime: '10:00', room: 'LH-101', targetThreshold: 75 },
-      { userId, name: 'Data Structures & Algorithms', code: 'CS201', faculty: 'Dr. Sharma', day: 'friday', startTime: '09:00', endTime: '10:00', room: 'LH-101', targetThreshold: 75 },
-      { userId, name: 'Operating Systems', code: 'CS301', faculty: 'Prof. Gupta', day: 'monday', startTime: '11:00', endTime: '12:00', room: 'LH-202', targetThreshold: 75 },
-      { userId, name: 'Operating Systems', code: 'CS301', faculty: 'Prof. Gupta', day: 'thursday', startTime: '11:00', endTime: '12:00', room: 'LH-202', targetThreshold: 75 },
-      { userId, name: 'Computer Networks', code: 'CS302', faculty: 'Dr. Patel', day: 'tuesday', startTime: '10:00', endTime: '11:00', room: 'LH-303', targetThreshold: 75 },
-      { userId, name: 'Computer Networks', code: 'CS302', faculty: 'Dr. Patel', day: 'thursday', startTime: '10:00', endTime: '11:00', room: 'LH-303', targetThreshold: 75 },
-      { userId, name: 'DBMS', code: 'CS303', faculty: 'Prof. Singh', day: 'tuesday', startTime: '14:00', endTime: '15:00', room: 'LH-104', targetThreshold: 75 },
-      { userId, name: 'DBMS', code: 'CS303', faculty: 'Prof. Singh', day: 'friday', startTime: '14:00', endTime: '15:00', room: 'LH-104', targetThreshold: 75 },
-      { userId, name: 'DSA Lab', code: 'CS201L', faculty: 'Dr. Sharma', day: 'wednesday', startTime: '14:00', endTime: '16:00', room: 'Lab-3', targetThreshold: 80 },
+      { userId, name: 'Data Structures & Algorithms', code: 'CS301', faculty: 'Dr. R.K. Pandey', day: 'monday', startTime: '09:00', endTime: '10:00', room: 'LHC-201', targetThreshold: 75 },
+      { userId, name: 'Data Structures & Algorithms', code: 'CS301', faculty: 'Dr. R.K. Pandey', day: 'wednesday', startTime: '09:00', endTime: '10:00', room: 'LHC-201', targetThreshold: 75 },
+      { userId, name: 'Data Structures & Algorithms', code: 'CS301', faculty: 'Dr. R.K. Pandey', day: 'friday', startTime: '09:00', endTime: '10:00', room: 'LHC-201', targetThreshold: 75 },
+      { userId, name: 'Operating Systems', code: 'CS302', faculty: 'Prof. S.K. Jain', day: 'monday', startTime: '11:00', endTime: '12:00', room: 'CSE Dept-103', targetThreshold: 75 },
+      { userId, name: 'Operating Systems', code: 'CS302', faculty: 'Prof. S.K. Jain', day: 'thursday', startTime: '11:00', endTime: '12:00', room: 'CSE Dept-103', targetThreshold: 75 },
+      { userId, name: 'Computer Networks', code: 'CS303', faculty: 'Dr. Preeti Gupta', day: 'tuesday', startTime: '10:00', endTime: '11:00', room: 'LHC-105', targetThreshold: 75 },
+      { userId, name: 'Computer Networks', code: 'CS303', faculty: 'Dr. Preeti Gupta', day: 'thursday', startTime: '10:00', endTime: '11:00', room: 'LHC-105', targetThreshold: 75 },
+      { userId, name: 'Database Management Systems', code: 'CS304', faculty: 'Prof. A.K. Sharma', day: 'tuesday', startTime: '14:00', endTime: '15:00', room: 'CSE Dept-201', targetThreshold: 75 },
+      { userId, name: 'Database Management Systems', code: 'CS304', faculty: 'Prof. A.K. Sharma', day: 'friday', startTime: '14:00', endTime: '15:00', room: 'CSE Dept-201', targetThreshold: 75 },
+      { userId, name: 'DSA Lab', code: 'CS301P', faculty: 'Dr. R.K. Pandey', day: 'wednesday', startTime: '14:00', endTime: '16:00', room: 'Computer Center Lab-2', targetThreshold: 80 },
     ]);
     console.log(`Timetable: ${subjects.length} entries`);
 
     // ═══ Attendance ═══
     await Attendance.deleteMany({ userId });
-    const dsaSub = subjects.filter((s) => s.code === 'CS201');
-    const osSub = subjects.filter((s) => s.code === 'CS301');
-    const cnSub = subjects.filter((s) => s.code === 'CS302');
-    const dbmsSub = subjects.filter((s) => s.code === 'CS303');
+    const dsaSub = subjects.filter((s) => s.code === 'CS301');
+    const osSub = subjects.filter((s) => s.code === 'CS302');
+    const cnSub = subjects.filter((s) => s.code === 'CS303');
+    const dbmsSub = subjects.filter((s) => s.code === 'CS304');
     const statuses = ['attended', 'attended', 'attended', 'attended', 'missed', 'attended', 'skipped'];
     const attRecords = [];
     for (let i = 1; i <= 18; i++) {
@@ -84,54 +93,55 @@ async function seed() {
     await Attendance.insertMany(attRecords);
     console.log(`Attendance: ${attRecords.length} records`);
 
-    // ═══ Expenses (includes already-purchased items) ═══
+    // ═══ Expenses — Localized to Raipur ═══
     await Expense.deleteMany({ userId });
     await Expense.insertMany([
-      // Already purchased academic items (supports shopping AI reasoning)
-      { userId, amount: 1200, date: daysAgo(14), merchant: 'Amazon', description: 'Casio FX-991ES Scientific Calculator', category: 'academics', paymentMode: 'upi', source: 'manual' },
-      { userId, amount: 450, date: daysAgo(12), merchant: 'Campus Store', description: 'Engineering Drawing Kit', category: 'academics', paymentMode: 'cash', source: 'manual' },
-      // Regular expenses
-      { userId, amount: 120, date: daysAgo(0), merchant: 'Campus Canteen', description: 'Lunch - rice and dal', category: 'food', paymentMode: 'upi', source: 'manual' },
-      { userId, amount: 45, date: daysAgo(0), merchant: 'Tea Point', description: 'Tea and biscuits', category: 'food', paymentMode: 'cash', source: 'manual' },
-      { userId, amount: 250, date: daysAgo(1), merchant: 'Auto Stand', description: 'Auto to Sarojini Nagar', category: 'travel', paymentMode: 'cash', source: 'manual' },
-      { userId, amount: 350, date: daysAgo(2), merchant: 'Amazon', description: 'Graph Theory textbook', category: 'academics', paymentMode: 'upi', source: 'manual' },
-      { userId, amount: 200, date: daysAgo(3), merchant: 'PVR Cinemas', description: 'Movie with friends', category: 'entertainment', paymentMode: 'upi', source: 'manual' },
-      { userId, amount: 1500, date: daysAgo(4), merchant: 'Hostel Mess', description: 'Monthly mess fee', category: 'hostel', paymentMode: 'bank_transfer', source: 'manual' },
-      { userId, amount: 80, date: daysAgo(5), merchant: 'Xerox Shop', description: 'Assignment printout', category: 'academics', paymentMode: 'cash', source: 'manual' },
-      { userId, amount: 150, date: daysAgo(6), merchant: 'Dominos', description: 'Late night pizza', category: 'food', paymentMode: 'upi', source: 'manual' },
-      { userId, amount: 60, date: daysAgo(7), merchant: 'Metro', description: 'Metro to Hauz Khas', category: 'travel', paymentMode: 'card', source: 'manual' },
-      { userId, amount: 500, date: daysAgo(8), merchant: 'Flipkart', description: 'Phone charger cable', category: 'shopping', paymentMode: 'upi', source: 'manual' },
-      { userId, amount: 300, date: daysAgo(9), merchant: 'Airtel', description: 'Mobile recharge', category: 'bills', paymentMode: 'upi', source: 'manual' },
-      { userId, amount: 180, date: daysAgo(10), merchant: 'Medical Store', description: 'Cold medicine', category: 'medical', paymentMode: 'cash', source: 'manual' },
-      { userId, amount: 90, date: daysAgo(11), merchant: 'Chai Sutta Bar', description: 'Coffee with study group', category: 'food', paymentMode: 'upi', source: 'manual' },
+      // Already purchased academic items
+      { userId, amount: 1200, date: daysAgo(14), merchant: 'Amazon', description: 'Casio FX-991EX Scientific Calculator', category: 'academics', paymentMode: 'upi', source: 'manual' },
+      { userId, amount: 420, date: daysAgo(12), merchant: 'Raipur Book House', description: 'Engineering Drawing Kit', category: 'academics', paymentMode: 'cash', source: 'manual' },
+      // Regular expenses — Raipur life
+      { userId, amount: 80, date: daysAgo(0), merchant: 'NIT Canteen', description: 'Lunch - thali', category: 'food', paymentMode: 'upi', source: 'manual' },
+      { userId, amount: 30, date: daysAgo(0), merchant: 'Campus Chai Stall', description: 'Chai and samosa', category: 'food', paymentMode: 'cash', source: 'manual' },
+      { userId, amount: 150, date: daysAgo(1), merchant: 'Auto', description: 'Auto to GE Road market', category: 'travel', paymentMode: 'cash', source: 'manual' },
+      { userId, amount: 350, date: daysAgo(2), merchant: 'Raipur Book House', description: 'DBMS textbook (Korth)', category: 'academics', paymentMode: 'upi', source: 'manual' },
+      { userId, amount: 250, date: daysAgo(3), merchant: 'PVR Magneto Mall', description: 'Movie with friends', category: 'entertainment', paymentMode: 'upi', source: 'manual' },
+      { userId, amount: 1400, date: daysAgo(4), merchant: 'Hostel Mess', description: 'Monthly mess fee', category: 'hostel', paymentMode: 'bank_transfer', source: 'manual' },
+      { userId, amount: 60, date: daysAgo(5), merchant: 'Campus Xerox', description: 'Assignment printout', category: 'academics', paymentMode: 'cash', source: 'manual' },
+      { userId, amount: 180, date: daysAgo(6), merchant: "Domino's Telibandha", description: 'Late night pizza after coding', category: 'food', paymentMode: 'upi', source: 'manual' },
+      { userId, amount: 40, date: daysAgo(7), merchant: 'City Bus', description: 'Bus to Pandri Market', category: 'travel', paymentMode: 'cash', source: 'manual' },
+      { userId, amount: 500, date: daysAgo(8), merchant: 'Reliance Smart', description: 'Shampoo, soap, snacks', category: 'shopping', paymentMode: 'upi', source: 'manual' },
+      { userId, amount: 299, date: daysAgo(9), merchant: 'Jio', description: 'Mobile recharge', category: 'bills', paymentMode: 'upi', source: 'manual' },
+      { userId, amount: 120, date: daysAgo(10), merchant: 'Medical Store', description: 'Crocin and cold medicine', category: 'medical', paymentMode: 'cash', source: 'manual' },
+      { userId, amount: 100, date: daysAgo(11), merchant: 'Amul Parlour', description: 'Ice cream with hostel friends', category: 'food', paymentMode: 'upi', source: 'manual' },
+      { userId, amount: 300, date: daysAgo(12), merchant: 'Ola', description: 'Cab to Railway Station', category: 'travel', paymentMode: 'upi', source: 'manual' },
     ]);
-    console.log('Expenses: 15 records');
+    console.log('Expenses: 16 records');
 
     // ═══ Budgets ═══
     await ExpenseBudget.deleteMany({ userId });
     const month = getCurrentMonth();
     await ExpenseBudget.insertMany([
-      { userId, category: 'food', limit: 5000, month },
-      { userId, category: 'travel', limit: 2000, month },
-      { userId, category: 'academics', limit: 5000, month },
-      { userId, category: 'entertainment', limit: 1500, month },
-      { userId, category: 'hostel', limit: 2000, month },
-      { userId, category: 'shopping', limit: 2000, month },
+      { userId, category: 'food', limit: 4000, month },
+      { userId, category: 'travel', limit: 1500, month },
+      { userId, category: 'academics', limit: 4000, month },
+      { userId, category: 'entertainment', limit: 1200, month },
+      { userId, category: 'hostel', limit: 1800, month },
+      { userId, category: 'shopping', limit: 1500, month },
     ]);
     console.log('Budgets: 6 categories');
 
-    // ═══ Documents (including Syllabus + Hostel Guide for shopping AI) ═══
+    // ═══ Documents — NIT Raipur context ═══
     await Document.deleteMany({ userId });
     await Document.insertMany([
       {
         userId,
-        fileName: 'Semester_V_Syllabus.pdf',
+        fileName: 'NIT_Raipur_Sem5_Syllabus.pdf',
         fileKey: `${userId}/documents/demo-syllabus.pdf`,
         fileType: 'application/pdf',
-        fileSize: 180000,
+        fileSize: 195000,
         category: 'attendance',
         extractedData: {
-          title: 'Semester V Course Requirements',
+          title: 'NIT Raipur CSE Semester V - Course Requirements',
           dates: [],
           subjects: ['Data Structures & Algorithms', 'Operating Systems', 'Computer Networks', 'DBMS'],
           keyInfo: [
@@ -146,17 +156,17 @@ async function seed() {
       },
       {
         userId,
-        fileName: 'Hostel_Guide.pdf',
+        fileName: 'Hostel_Allotment_Guide.pdf',
         fileKey: `${userId}/documents/demo-hostel-guide.pdf`,
         fileType: 'application/pdf',
-        fileSize: 95000,
+        fileSize: 88000,
         category: 'hostel_notice',
         extractedData: {
-          title: 'Hostel Move-In Essentials Guide',
+          title: 'NIT Raipur Hostel Move-In Essentials',
           dates: [],
           subjects: [],
           keyInfo: [
-            'Mattress and pillow required',
+            'Mattress and pillow required (not provided)',
             'Bucket and mug for bathroom',
             'Extension board strongly recommended',
             'Study lamp for late-night work',
@@ -177,7 +187,7 @@ async function seed() {
           title: 'DSA Assignment 3 - Trees and Graphs',
           dates: [{ label: 'Due Date', date: daysFromNow(3).toISOString().split('T')[0] }],
           subjects: ['Data Structures & Algorithms'],
-          keyInfo: ['Implement BFS and DFS', 'Minimum spanning tree problem', 'Submit on Moodle'],
+          keyInfo: ['Implement BFS and DFS', 'Minimum Spanning Tree problem', 'Submit on Moodle portal'],
         },
         status: 'confirmed',
         source: 'upload',
@@ -193,23 +203,23 @@ async function seed() {
           title: 'Operating Systems Mid-Semester Examination',
           dates: [{ label: 'Exam Date', date: daysFromNow(7).toISOString().split('T')[0] }],
           subjects: ['Operating Systems'],
-          keyInfo: ['Syllabus: Processes, Threads, Scheduling, Deadlocks', 'Duration: 2 hours', 'Venue: Exam Hall 1'],
+          keyInfo: ['Syllabus: Processes, Threads, Scheduling, Deadlocks', 'Duration: 2 hours', 'Venue: LHC Exam Hall'],
         },
         status: 'confirmed',
         source: 'upload',
       },
       {
         userId,
-        fileName: 'Placement_Drive_TCS.docx',
-        fileKey: `${userId}/documents/demo-placement-tcs.docx`,
-        fileType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        fileSize: 89000,
+        fileName: 'TnP_TCS_Notice.pdf',
+        fileKey: `${userId}/documents/demo-placement-tcs.pdf`,
+        fileType: 'application/pdf',
+        fileSize: 92000,
         category: 'placement',
         extractedData: {
-          title: 'TCS NQT Placement Drive Registration',
+          title: 'TCS NQT Campus Drive - NIT Raipur',
           dates: [{ label: 'Registration Deadline', date: daysFromNow(5).toISOString().split('T')[0] }],
           subjects: [],
-          keyInfo: ['Eligibility: 60% and above', 'Register on placement portal', 'Carry ID card and resume'],
+          keyInfo: ['Eligibility: 60% and above, no active backlogs', 'Register on Training & Placement portal', 'Carry college ID and updated resume'],
         },
         status: 'confirmed',
         source: 'upload',
@@ -217,29 +227,25 @@ async function seed() {
     ]);
     console.log('Documents: 5 confirmed uploads');
 
-    // ═══ Shopping Items (Amazon Marketplace) ═══
+    // ═══ Shopping Items — Student essentials ═══
     await ShoppingItem.deleteMany({ userId });
     await ShoppingItem.insertMany([
-      // Already purchased (tracked for AI awareness)
-      { userId, title: 'Casio FX-991ES Scientific Calculator', category: 'electronics', source: 'ai_detected', reason: 'Required for practical sessions (Semester V Syllabus)', priority: 'high', estimatedCost: 1200, purchased: true, amazonSearchUrl: 'https://www.amazon.in/s?k=Casio+FX-991ES+Scientific+Calculator' },
-      { userId, title: 'Engineering Drawing Kit', category: 'stationery', source: 'ai_detected', reason: 'Recommended by Semester V Syllabus', priority: 'medium', estimatedCost: 450, purchased: true, amazonSearchUrl: 'https://www.amazon.in/s?k=Engineering+Drawing+Kit' },
-      // Still needed — high priority
-      { userId, title: 'Lab Coat (White, Full Sleeve)', category: 'lab', source: 'ai_detected', reason: 'Mandatory for laboratory courses starting next week', priority: 'high', estimatedCost: 800, purchased: false, amazonSearchUrl: 'https://www.amazon.in/s?k=White+Lab+Coat+Full+Sleeve' },
-      // Still needed — medium priority
-      { userId, title: 'Database System Concepts (Korth)', category: 'books', source: 'ai_detected', reason: 'DBMS textbook recommended for coursework', priority: 'medium', estimatedCost: 900, purchased: false, amazonSearchUrl: 'https://www.amazon.in/s?k=Database+System+Concepts+Korth' },
-      { userId, title: 'Extension Board (4 socket, surge protection)', category: 'hostel', source: 'ai_detected', reason: 'Hostel essential - strongly recommended', priority: 'medium', estimatedCost: 600, purchased: false, amazonSearchUrl: 'https://www.amazon.in/s?k=Extension+Board+4+Socket+Surge+Protection' },
-      // Still needed — low priority
-      { userId, title: 'Hostel Pillow (Memory Foam)', category: 'hostel', source: 'ai_detected', reason: 'Hostel move-in essential', priority: 'low', estimatedCost: 500, purchased: false, amazonSearchUrl: 'https://www.amazon.in/s?k=Memory+Foam+Pillow+Students' },
-      { userId, title: 'LED Study Lamp (USB rechargeable)', category: 'hostel', source: 'ai_detected', reason: 'Study lamp for late-night work', priority: 'low', estimatedCost: 700, purchased: false, amazonSearchUrl: 'https://www.amazon.in/s?k=LED+Study+Lamp+USB+Rechargeable' },
+      { userId, title: 'Casio FX-991EX Scientific Calculator', category: 'electronics', source: 'ai_detected', reason: 'Required for practical sessions (Semester V Syllabus)', priority: 'high', estimatedCost: 1200, purchased: true, amazonSearchUrl: 'https://www.amazon.in/s?k=Casio+FX-991EX+Scientific+Calculator' },
+      { userId, title: 'Engineering Drawing Kit', category: 'stationery', source: 'ai_detected', reason: 'Recommended by Semester V Syllabus', priority: 'medium', estimatedCost: 420, purchased: true, amazonSearchUrl: 'https://www.amazon.in/s?k=Engineering+Drawing+Kit' },
+      { userId, title: 'White Lab Coat (Full Sleeve)', category: 'lab', source: 'ai_detected', reason: 'Mandatory for laboratory courses starting next week', priority: 'high', estimatedCost: 650, purchased: false, amazonSearchUrl: 'https://www.amazon.in/s?k=White+Lab+Coat+Full+Sleeve+Student' },
+      { userId, title: 'Database System Concepts (Korth)', category: 'books', source: 'ai_detected', reason: 'DBMS textbook recommended for coursework', priority: 'medium', estimatedCost: 850, purchased: false, amazonSearchUrl: 'https://www.amazon.in/s?k=Database+System+Concepts+Korth' },
+      { userId, title: 'Extension Board (4 socket, surge protection)', category: 'hostel', source: 'ai_detected', reason: 'Hostel essential - strongly recommended', priority: 'medium', estimatedCost: 550, purchased: false, amazonSearchUrl: 'https://www.amazon.in/s?k=Extension+Board+4+Socket+Surge+Protection' },
+      { userId, title: 'Hostel Pillow (Memory Foam)', category: 'hostel', source: 'ai_detected', reason: 'Hostel move-in essential', priority: 'low', estimatedCost: 450, purchased: false, amazonSearchUrl: 'https://www.amazon.in/s?k=Memory+Foam+Pillow+Students' },
+      { userId, title: 'LED Study Lamp (USB rechargeable)', category: 'hostel', source: 'ai_detected', reason: 'Study lamp for late-night coding sessions', priority: 'low', estimatedCost: 600, purchased: false, amazonSearchUrl: 'https://www.amazon.in/s?k=LED+Study+Lamp+USB+Rechargeable' },
     ]);
     console.log('Shopping Items: 7 (2 purchased, 5 pending)');
 
-    // ═══ Knowledge Resources ═══
+    // ═══ Knowledge Resources — NIT Raipur CSE ═══
     await KnowledgeResource.deleteMany({ userId });
     const resources = await KnowledgeResource.insertMany([
-      { userId, type: 'notes', title: 'Binary Search Tree - Complete Notes', subject: 'Data Structures & Algorithms', description: 'BST operations: insertion, deletion, traversal, balancing.', content: '# BST\n- Search: O(log n)\n- Insert: O(log n)\n- Delete: O(log n)' },
-      { userId, type: 'pyq', title: 'OS Mid-Sem 2024 Paper', subject: 'Operating Systems', description: 'Previous year paper with scheduling and deadlock questions.', content: 'Q1. Round Robin (quantum=4ms)\nQ2. Banker\'s algorithm\nQ3. Preemptive vs non-preemptive' },
-      { userId, type: 'professor_review', title: 'Dr. Sharma - DSA', subject: 'Data Structures & Algorithms', description: 'Thorough explanations. Challenging but fair assignments. Bonus marks for creativity.', rating: 4 },
+      { userId, type: 'notes', title: 'Binary Search Tree - Complete Notes', subject: 'Data Structures & Algorithms', description: 'BST operations: insertion, deletion, traversal, balancing. Covers AVL trees.', content: '# Binary Search Tree\n\n## Properties\n- Left < Parent < Right\n\n## Operations\n- Search: O(log n)\n- Insert: O(log n)\n- Delete: O(log n)\n\n## AVL Rotation\n- LL, RR, LR, RL cases' },
+      { userId, type: 'pyq', title: 'OS Mid-Sem 2024 - NIT Raipur', subject: 'Operating Systems', description: 'Last year mid-semester paper with process scheduling and deadlock questions.', content: 'Q1. Explain Round Robin scheduling (quantum=4ms)\nQ2. Prove Banker\'s algorithm safety\nQ3. Compare preemptive vs non-preemptive\nQ4. Dining Philosophers Problem' },
+      { userId, type: 'professor_review', title: 'Dr. R.K. Pandey - DSA', subject: 'Data Structures & Algorithms', description: 'Excellent teacher. Explains concepts with real-world examples. Assignments are tough but fair. Gives bonus marks for creative solutions in lab.', rating: 4 },
     ]);
     console.log(`Knowledge Resources: ${resources.length}`);
 
@@ -247,56 +253,63 @@ async function seed() {
     await GoodSeniorPoints.deleteMany({ userId });
     await GoodSeniorPoints.create({
       userId, totalPoints: 30,
-      contributions: resources.map((r) => ({ resourceId: r._id, type: r.type, pointsEarned: 10, date: daysAgo(2) })),
+      contributions: resources.map((r) => ({ resourceId: r._id, type: r.type, pointsEarned: 10, date: daysAgo(3) })),
     });
     console.log('Senior Points: 30');
 
-    // ═══ Burnout Records ═══
+    // ═══ Burnout Records — realistic college life ═══
     await BurnoutRecord.deleteMany({ userId });
     const burnouts = [];
+    // Simulates: good start → increasing pressure from assignments + placement prep → recovery attempt
+    const moods = [4, 4, 3, 3, 3, 2, 2, 3, 2, 2];
+    const sleeps = [7, 6.5, 6, 5.5, 7, 5, 4.5, 6, 5, 5];
+    const workloads = [3, 3, 4, 5, 4, 5, 5, 4, 5, 5];
     for (let i = 0; i < 10; i++) {
       burnouts.push({
         userId,
-        mood: Math.max(1, Math.min(5, 4 - Math.floor(i / 4))),
-        sleepHours: [7, 6.5, 6, 5.5, 7, 6, 5, 7.5, 6, 5.5][i],
-        workloadEstimate: [2, 3, 3, 4, 3, 4, 4, 3, 4, 5][i],
+        mood: moods[i],
+        sleepHours: sleeps[i],
+        workloadEstimate: workloads[i],
         pendingTasksCount: 2 + Math.floor(i / 3),
-        lateNightSpending: i === 7,
-        score: Math.min(100, 25 + i * 5),
-        level: i < 4 ? 'low' : i < 7 ? 'medium' : 'high',
+        lateNightSpending: i === 5 || i === 9, // Late night pizza/coding sessions
+        score: Math.min(100, 20 + i * 6),
+        level: i < 3 ? 'low' : i < 7 ? 'medium' : 'high',
         date: daysAgo(i),
       });
     }
     await BurnoutRecord.insertMany(burnouts);
-    console.log('Burnout: 10 records');
+    console.log('Burnout: 10 records (low → medium → high trend)');
 
-    // ═══ Focus Session (latest) ═══
+    // ═══ Focus Session ═══
     await FocusSession.deleteMany({ userId });
     await FocusSession.create({
-      userId, burnoutLevel: 'medium', workload: 4, sleepScore: 6, mood: 3,
-      recommendation: 'One 90-minute deep study session with a 15-minute break.',
-      playlistType: 'deep_focus', duration: 90, reason: 'Upcoming exam + medium burnout',
+      userId, burnoutLevel: 'medium', workload: 6, sleepScore: 5, mood: 3,
+      recommendation: 'Two 45-minute focused study sessions with a 15-minute break. Prioritize OS revision.',
+      playlistType: 'deep_focus', duration: 90, reason: 'Upcoming OS midsem + assignment deadline',
     });
     console.log('Focus Session: 1 recommendation');
 
-    // ═══ Notifications ═══
+    // ═══ Notifications — NIT Raipur context ═══
     await Notification.deleteMany({ userId });
     await Notification.insertMany([
-      { userId, title: 'DSA Assignment Due Soon', message: 'DSA Assignment 3 (Trees and Graphs) is due in 3 days.', type: 'deadline', priority: 'urgent', isRead: false },
-      { userId, title: 'OS Mid-Sem Next Week', message: 'Operating Systems mid-semester exam is in 7 days.', type: 'deadline', priority: 'normal', isRead: false },
-      { userId, title: 'TCS Registration Closing', message: 'TCS NQT placement drive registration closes in 5 days.', type: 'deadline', priority: 'normal', isRead: false },
-      { userId, title: 'Lab Coat Required', message: 'Lab Coat is mandatory for next week\'s practical. Purchase it soon.', type: 'general', priority: 'normal', isRead: false },
+      { userId, title: 'DSA Assignment Due Soon', message: 'DSA Assignment 3 (Trees & Graphs) is due in 3 days. Submit on Moodle.', type: 'deadline', priority: 'urgent', isRead: false },
+      { userId, title: 'OS Mid-Sem Next Week', message: 'Operating Systems mid-semester exam at LHC Exam Hall in 7 days.', type: 'deadline', priority: 'normal', isRead: false },
+      { userId, title: 'TCS Registration Closing', message: 'TCS NQT campus drive registration via T&P portal closes in 5 days.', type: 'deadline', priority: 'normal', isRead: false },
+      { userId, title: 'Lab Coat Required', message: 'Lab Coat is mandatory for next week\'s practical at Computer Center Lab-2.', type: 'general', priority: 'normal', isRead: false },
       { userId, title: 'Attendance Warning - OS', message: 'Your Operating Systems attendance is approaching the 75% threshold.', type: 'attendance', priority: 'normal', isRead: true },
-      { userId, title: 'Food Budget Alert', message: 'You have used 80% of your monthly food budget.', type: 'budget', priority: 'low', isRead: true },
+      { userId, title: 'Food Budget Alert', message: 'You have used 75% of your monthly food budget (₹3,000/₹4,000).', type: 'budget', priority: 'low', isRead: true },
     ]);
     console.log('Notifications: 6 alerts');
 
     console.log('\n✅ Demo data seeded successfully!');
-    console.log('Demo login email: demo@campusos.app');
-    console.log('\nMarketplace ready:');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('Demo login: demo@campusos.app');
+    console.log('Profile: Anshuman A Sahu, NIT Raipur');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('\nMarketplace:');
     console.log('  ✓ 5 pending items (Lab Coat, DBMS Book, Extension Board, Pillow, Lamp)');
     console.log('  ✓ 2 purchased items (Calculator, Drawing Kit)');
-    console.log('  ✓ Supporting documents (Syllabus, Hostel Guide)');
+    console.log('  ✓ Supporting documents (NIT Raipur Syllabus, Hostel Guide)');
     console.log('  ✓ Purchase expenses tracked');
     console.log('  ✓ Amazon search links generated');
     process.exit(0);
