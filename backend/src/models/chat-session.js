@@ -26,15 +26,21 @@ const chatSessionSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    sessionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ChatThread',
+      default: null,
+      index: true,
+    },
     role: {
       type: String,
       required: [true, 'Role is required'],
-      enum: ['user', 'assistant'],
+      enum: ['user', 'assistant', 'system'],
     },
     message: {
       type: String,
       required: [true, 'Message is required'],
-      maxlength: 5000,
+      maxlength: 10000,
     },
     sources: {
       type: [sourceSchema],
@@ -44,6 +50,10 @@ const chatSessionSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    contextModules: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: { createdAt: true, updatedAt: false },
@@ -51,6 +61,7 @@ const chatSessionSchema = new mongoose.Schema(
 );
 
 chatSessionSchema.index({ userId: 1, createdAt: -1 });
+chatSessionSchema.index({ sessionId: 1, createdAt: 1 });
 
 const ChatSession = mongoose.model('ChatSession', chatSessionSchema);
 export default ChatSession;

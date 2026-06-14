@@ -1,7 +1,14 @@
 import api from '../config/api.js';
 
 export const chatbotService = {
-  sendMessage: (query) => api.post('/chatbot/message', { query }),
+  // Messaging (backward compatible)
+  sendMessage: (query, sessionId) => api.post('/chatbot/message', { query, sessionId }),
   getHistory: (params) => api.get('/chatbot/history', { params }),
-  clearHistory: () => api.delete('/chatbot/history'),
+  clearHistory: (sessionId) => api.delete('/chatbot/history', { data: { sessionId } }),
+
+  // Session management
+  listThreads: () => api.get('/chatbot/threads'),
+  createThread: (title) => api.post('/chatbot/threads', { title }),
+  renameThread: (id, title) => api.put(`/chatbot/threads/${id}`, { title }),
+  deleteThread: (id) => api.delete(`/chatbot/threads/${id}`),
 };
